@@ -22,7 +22,7 @@ const connection = mysql.createConnection({
 app.get("/traveller", function(request, response) {
   /*
     
-  const username = request.query.username;
+  const username = request.query.username;    
 
 
   let queryToExecute = "SELECT * FROM Task";
