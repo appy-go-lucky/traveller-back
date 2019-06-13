@@ -1,0 +1,31 @@
+service: traveller-backend-service
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-2
+
+functions:
+  tasks:
+    handler: traveller.handler
+    environment:
+      DB_HOST: ${opt:DB_HOST}
+      DB_USER: ${opt:DB_USER}
+      DB_PASSWORD: ${opt:DB_PASSWORD}
+    events:
+      - http:
+          path: traveller
+          method: get
+          cors: true
+      - http:
+          path: traveller
+          method: post
+          cors: true
+      - http:
+          path: traveller
+          method: delete
+          cors: true
+      - http:
+          path: traveller
+          method: put
+          cors: true
