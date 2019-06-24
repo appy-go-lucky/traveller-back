@@ -38,34 +38,6 @@ app.get("/traveller/blog", function(request, response) {
       });
     }
   });
-  /*
-    
-  const username = request.query.username;    
-
-
-  let queryToExecute = "SELECT * FROM Task";
-  
-  if (username) {
-    queryToExecute =
-      "SELECT * FROM Task JOIN User on Task.UserId = User.UserId " +
-      "WHERE User.Username = " + connection.escape(username);
-  }
-
-  connection.query(queryToExecute, (err, queryResults) => {
-    if (err) {
-      console.log("Error fetching tasks", err);
-      response.status(500).json({
-        error: err
-      });
-      
-    } 
-    else {
-      response.json({
-        tasks: queryResults
-      });
-    }
-  });
-  */
 });
 
 app.get("/traveller/user", function(request, response) {
@@ -83,6 +55,53 @@ app.get("/traveller/user", function(request, response) {
     else {
       response.json({
         users: queryResults
+      });
+    }
+  });
+});
+
+app.get("/traveller/blogbc/:country_name", function(request, response) {
+
+  const blog_country_name = request.params.country_name;
+
+  let queryToExecute = 
+  "select BLOG.blog_id, BLOG.blog_text, BLOG.blog_country_name, BLOG.blog_city, USER.user_id, USER.user_name, USER.user_country_name, USER.user_city, RESTAURANT.rest_id, RESTAURANT.rest_name, RESTAURANT.rest_link, HOTEL.hotel_id, HOTEL.hotel_name, HOTEL.hotel_link, ATTRACTION.attract_id, ATTRACTION.attract_name, ATTRACTION.attract_link from BLOG join USER on BLOG.user_id = USER.user_id left join RESTAURANT on BLOG.blog_id = RESTAURANT.blog_id left join HOTEL on BLOG.blog_id = HOTEL.blog_id left join ATTRACTION on BLOG.blog_id = ATTRACTION.blog_id WHERE BLOG.blog_country_name = ?;"
+  
+  connection.query(queryToExecute, blog_country_name, (err, queryResults, fields) => {
+    if (err) {
+      console.log("Error fetching blogs", err);
+      response.status(500).json({
+        error: err
+      });
+      
+    } 
+    else {
+      response.json({
+        blogs: queryResults
+      });
+    }
+  });
+});
+
+
+app.get("/traveller/bloguc/:country_name", function(request, response) {
+
+  const user_country_name = request.params.country_name;
+
+  let queryToExecute = 
+  "select BLOG.blog_id, BLOG.blog_text, BLOG.blog_country_name, BLOG.blog_city, USER.user_id, USER.user_name, USER.user_country_name, USER.user_city, RESTAURANT.rest_id, RESTAURANT.rest_name, RESTAURANT.rest_link, HOTEL.hotel_id, HOTEL.hotel_name, HOTEL.hotel_link, ATTRACTION.attract_id, ATTRACTION.attract_name, ATTRACTION.attract_link from BLOG join USER on BLOG.user_id = USER.user_id left join RESTAURANT on BLOG.blog_id = RESTAURANT.blog_id left join HOTEL on BLOG.blog_id = HOTEL.blog_id left join ATTRACTION on BLOG.blog_id = ATTRACTION.blog_id WHERE USER.user_country_name = ?;"
+  
+  connection.query(queryToExecute, user_country_name, (err, queryResults, fields) => {
+    if (err) {
+      console.log("Error fetching blogs", err);
+      response.status(500).json({
+        error: err
+      });
+      
+    } 
+    else {
+      response.json({
+        blogs: queryResults
       });
     }
   });

@@ -22,6 +22,14 @@ functions:
           method: get
           cors: true
       - http:
+          path: traveller/blogbc/{country_name}
+          method: get
+          cors: true
+      - http:
+          path: traveller/bloguc/{country_name}
+          method: get
+          cors: true
+      - http:
           path: traveller/user
           method: post
           cors: true
