@@ -30,10 +30,18 @@ functions:
           method: post
           cors: true
       - http:
-          path: traveller/{id}
+          path: traveller/blog/{blog_id}
           method: delete
           cors: true
       - http:
-          path: traveller
+          path: traveller/user/{user_id}
+          method: delete
+          cors: true
+      - http:
+          path: traveller/blog
+          method: put
+          cors: true
+      - http:
+          path: traveller/user
           method: put
           cors: true

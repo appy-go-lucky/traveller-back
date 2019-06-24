@@ -22,7 +22,7 @@ const connection = mysql.createConnection({
 app.get("/traveller/blog", function(request, response) {
 
   let queryToExecute = 
-  "select BLOG.blog_id, BLOG.blog_text, BLOG.blog_country_name, BLOG.blog_city, USER.user_id, USER.user_name, USER.user_country_name, USER.user_city, RESTAURANT.rest_name, RESTAURANT.rest_link, HOTEL.hotel_name, HOTEL.hotel_link, ATTRACTION.attract_name, ATTRACTION.attract_link from BLOG join USER on BLOG.user_id = USER.user_id left join RESTAURANT on BLOG.blog_id = RESTAURANT.blog_id left join HOTEL on BLOG.blog_id = HOTEL.blog_id left join ATTRACTION on BLOG.blog_id = ATTRACTION.blog_id;"
+  "select BLOG.blog_id, BLOG.blog_text, BLOG.blog_country_name, BLOG.blog_city, USER.user_id, USER.user_name, USER.user_country_name, USER.user_city, RESTAURANT.rest_id, RESTAURANT.rest_name, RESTAURANT.rest_link, HOTEL.hotel_id, HOTEL.hotel_name, HOTEL.hotel_link, ATTRACTION.attract_id, ATTRACTION.attract_name, ATTRACTION.attract_link from BLOG join USER on BLOG.user_id = USER.user_id left join RESTAURANT on BLOG.blog_id = RESTAURANT.blog_id left join HOTEL on BLOG.blog_id = HOTEL.blog_id left join ATTRACTION on BLOG.blog_id = ATTRACTION.blog_id;"
   
   connection.query(queryToExecute, (err, queryResults) => {
     if (err) {
@@ -259,37 +259,143 @@ app.post("/traveller/user", function(request, response) {
 });
 
 
-app.put("/traveller", function(request, response) {
-  /* this expects call in format /tasks?taskID=2 if updating taskID = 2 
-   Note that in serverless.yml the path expected for update is just 'tasks
-   i.e. the 'taskID' is extracted from the request below - then sanitised 'using' 'escape' - then used in the query*/
+app.put("/traveller/blog", function(request, response) {
 
-   /*
-  const taskToBeUpdated = request.body;
-  const taskID = request.query.taskID;
+console.log ("UPDATE blog");
 
-  console.log(request.body);
-  const queryToExecute = "UPDATE Task SET ? WHERE taskID = " + connection.escape(taskID);
+console.log (request.body);
 
-  connection.query(queryToExecute, taskToBeUpdated, function (error, results, fields) {
+const blog_id = request.body.blog_id;
+const blog_text = request.body.blog_text;
+const blog_country_name = request.body.blog_country_name;
+const blog_city = request.body.blog_city;
+
+const hotel_id = request.body.hotel_id;
+const hotel_name = request.body.hotel_name;
+const hotel_link = request.body.hotel_link;
+
+const rest_id = request.body.rest_id;
+const rest_name = request.body.rest_name;
+const rest_link = request.body.rest_link;
+
+const attract_id = request.body.attract_id;
+const attract_name = request.body.attract_name;
+const attract_link = request.body.attract_link;
+
+const blog_queryToExecute = "UPDATE BLOG SET blog_text = ?, blog_country_name = ?, blog_city = ? WHERE blog_id = ?";
+
+const hotel_queryToExecute = "UPDATE HOTEL SET hotel_name = ?, hotel_link = ? WHERE hotel_id = ?";
+
+const rest_queryToExecute = "UPDATE RESTAURANT SET rest_name = ?, rest_link = ? WHERE rest_id = ?";
+
+const attract_queryToExecute = "UPDATE ATTRACTION SET attract_name = ?, attract_link = ? WHERE attract_id = ?";
+            /**/
+
+connection.query(blog_queryToExecute, [blog_text, blog_country_name, blog_city, blog_id], function (error, blog_queryresults, fields) {
+  if (error) {
+    console.log("Error updating BLOG record", error);
+    response.status(500).json({
+      error: error
+    });
+    
+  } 
+  else {
+
+                  /**/
+
+    connection.query(hotel_queryToExecute, [hotel_name, hotel_link, hotel_id], function (error, hotel_queryresults, fields) {
+      if (error) {
+        console.log("Error updating HOTEL record", error);
+        response.status(500).json({
+          error: error
+        });     
+      } 
+
+      else 
+      {
+            /**/
+
+        connection.query(rest_queryToExecute, [rest_name, rest_link, rest_id], function (error, rest_queryresults, fields) {
+          if (error) {
+            console.log("Error updating RESTAURANT record", error);
+            response.status(500).json({
+              error: error
+            });
+          } 
+
+
+
+  
+          else 
+          {
+
+            /**/
+
+            connection.query(attract_queryToExecute, [attract_name, attract_link, attract_id], function (error, attract_queryresults, fields) {
+              if (error) {
+                console.log("Error updating ATTRACTION record", error);
+                response.status(500).json({
+                  error: error
+                });
+
+              }
+
+              else {
+                response.status(201).send("Update BLOG queries successful: " + blog_queryresults.affectedRows + " Blogs updated, " + hotel_queryresults.affectedRows + " Hotels updated, " + rest_queryresults.affectedRows + " Restaurants updated, " + attract_queryresults.affectedRows + " Attractions updated"); 
+              }
+
+            });
+
+
+            /**/
+            
+           } 
+        });
+            /**/
+
+      }
+    });
+                  /**/
+  }
+     
+});
+
+});
+
+
+app.put("/traveller/user", function(request, response) {
+
+  console.log ("UPDATE user");
+  
+  console.log (request.body);
+  
+  const user_id = request.body.user_id;
+  const user_name = request.body.user_name;
+  const user_country_name = request.body.user_country_name;
+  const user_city = request.body.user_city;
+  
+  const user_queryToExecute = "UPDATE USER SET user_name = ?, user_country_name = ?, user_city = ? WHERE user_id = ?";
+
+  connection.query(user_queryToExecute, [user_name, user_country_name, user_city, user_id], function (error, blog_queryresults, fields) {
     if (error) {
-      console.log("Error updating task", error);
+      console.log("Error updating USER record", error);
       response.status(500).json({
         error: error
       });
       
     } 
     else {
-      response.send(200);
-    }
+  
+  
+                    response.status(201).send("Updated USER successfully");
+                }
+  
+              });
+  
   });
 
- */
 
-});
-
-
-app.delete("/traveller", function(request, response) {
+app.delete("/traveller/blog/:blog_id", function(request, response) {
 
   /* this expects call in format /tasks/2 if deleting taskID = 2 
    Note that in serverless.yml the path expected for delete is tasks/{id}, 
@@ -323,29 +429,109 @@ app.delete("/traveller", function(request, response) {
    i.e. the number after 'traveller' is the id which is extracted from the request below then used in the query*/
 
    
-  const blogToBeDeleted = request.params.id;
+  const blogToBeDeleted = request.params.blog_id;
 
-  const queryToExecute = "DELETE FROM BLOG WHERE blog_id = ?";
+  const blog_queryToExecute = "DELETE FROM BLOG WHERE blog_id = ?";
+  const hotel_queryToExecute = "DELETE FROM HOTEL WHERE blog_id = ?";
+  const rest_queryToExecute = "DELETE FROM RESTAURANT WHERE blog_id = ?";
+  const attract_queryToExecute = "DELETE FROM ATTRACTION WHERE blog_id = ?";
 
   console.log (request.body);
   
-  connection.query(queryToExecute, blogToBeDeleted, function (error, results, fields) {
+  /* must delete HOTEL/RESTAURANT/ATTRACTION records first then delete BLOG as last action (as blog_id is foreign key on the assocated records */
+  
+  connection.query(attract_queryToExecute, blogToBeDeleted, function (error, attract_queryresults, fields) {
     if (error) {
-      console.log("Error deleting blog", error);
+      console.log("Error deleting ATTRACTIO record", error);
       response.status(500).json({
         error: error
       });
       
     } 
     else {
-      response.json({
-        rows_deleted: results.affectedRows
+  
+                    /**/
+  
+      connection.query(hotel_queryToExecute, blogToBeDeleted, function (error, hotel_queryresults, fields) {
+        if (error) {
+          console.log("Error deleting HOTEL record", error);
+          response.status(500).json({
+            error: error
+          });     
+        } 
+  
+        else 
+        {
+              /**/
+  
+          connection.query(rest_queryToExecute, blogToBeDeleted, function (error, rest_queryresults, fields) {
+            if (error) {
+              console.log("Error deleting RESTAURANT record", error);
+              response.status(500).json({
+                error: error
+              });
+            } 
+  
+  
+  
+    
+            else 
+            {
+  
+              /**/
+  
+              connection.query(blog_queryToExecute, blogToBeDeleted, function (error, blog_queryresults, fields) {
+                if (error) {
+                  console.log("Error deleting BLOG record", error);
+                  response.status(500).json({
+                    error: error
+                  });
+  
+                }
+  
+                else {
+  
+                  response.status(201).send("Delete BLOG queries successful: " + blog_queryresults.affectedRows + " Blogs deleted, " + hotel_queryresults.affectedRows + " Hotels deleted, " + rest_queryresults.affectedRows + " Restaurants deleted, " + attract_queryresults.affectedRows + " Attractions deleted");
+                }
+  
+              });
+  
+  
+              /**/
+              
+             } 
+          });
+              /**/
+  
+        }
       });
+                    /**/
     }
+       
   });
 
 });
 
+
+app.delete("/traveller/user/:user_id", function(request, response) {
+
+  const userToBeDeleted = request.params.user_id;
+  const queryToExecute = "DELETE FROM USER WHERE user_id = ?";
+
+  connection.query(queryToExecute, userToBeDeleted, function (error, results, fields) {
+    if (error) {
+      console.log("Error deleting user", error);
+      response.status(500).json({
+        error: error
+      });
+      
+    } 
+    else {
+      response.status(201).send("Delete USER query successful: " + results.affectedRows + " rows deleted");
+    }
+  });
+
+});
 
 
 module.exports.handler = serverless(app);
