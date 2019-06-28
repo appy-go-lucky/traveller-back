@@ -1,4 +1,4 @@
-service: traveller-backend-service
+service: traveller-back-service
 
 provider:
   name: aws
@@ -14,18 +14,42 @@ functions:
       DB_PASSWORD: ${opt:DB_PASSWORD}
     events:
       - http:
-          path: traveller
+          path: traveller/blog
           method: get
           cors: true
       - http:
-          path: traveller
+          path: traveller/user
+          method: get
+          cors: true
+      - http:
+          path: traveller/blogbc/{country_name}
+          method: get
+          cors: true
+      - http:
+          path: traveller/bloguc/{country_name}
+          method: get
+          cors: true
+      - http:
+          path: traveller/user
           method: post
           cors: true
       - http:
-          path: traveller
+          path: traveller/blog
+          method: post
+          cors: true
+      - http:
+          path: traveller/blog/{blog_id}
           method: delete
           cors: true
       - http:
-          path: traveller
+          path: traveller/user/{user_id}
+          method: delete
+          cors: true
+      - http:
+          path: traveller/blog
+          method: put
+          cors: true
+      - http:
+          path: traveller/user
           method: put
           cors: true
